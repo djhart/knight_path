@@ -16,10 +16,27 @@ class Node
 		return @@Q
 	end
 
-	def self.find (x, y)
+	def coord
+		[@xcoord, @ycoord]
+	end
+
+	def self.find (arr)
+		x = arr[0]
+		y = arr[1]
 		ind = x + y *8
 		return @@Q[ind]
 	end
+
+	def find_neighbors
+		arr = []
+		x = @xcoord
+		y = @ycoord
+		moves = [[x+2,y+1], [x+2, y-1], [x-2,y+1], [x-2,y-1], [x+1, y+2], [x+1, y-2], [x-1, y+2], [x-1, y-2]]
+		moves.delete_if{|x| !((0..7).include?(x[0])) || !((0..7).include?(x[1])) }
+		moves.each {|x| arr << Node.find(x)}
+		return arr
+	end
+
 
 end
 
@@ -37,5 +54,7 @@ end
 
 build_board
 q =  Node.queue
-s = Node.find(7,4)
-puts s.xcoord, s.ycoord
+s = Node.find([7,4])
+
+arr = s.find_neighbors
+puts arr.length
