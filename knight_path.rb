@@ -1,5 +1,3 @@
-#look at dijkstras and A* == goood palces to start
-
 class Node
 	attr_accessor :dist, :prev, :xcoord, :ycoord, :Q, :V
 	@@Q = [] # unvisited
@@ -7,7 +5,7 @@ class Node
 	def initialize(xcoord, ycoord)
 		@xcoord = xcoord
 		@ycoord = ycoord
-		@prev = [] #unidentified
+		@prev = 0 #unidentified
 		@dist = 1000000 #infinity
 		@@Q << self
 	end
@@ -27,6 +25,17 @@ class Node
 		return @@Q[ind]
 	end
 
+	def show_path
+		if self.prev == 0
+			print self.coord
+			puts ""
+		else
+			self.prev.show_path
+			print self.coord
+			puts ""
+		end
+	end
+
 	def find_neighbors
 		arr = []
 		x = @xcoord
@@ -38,15 +47,12 @@ class Node
 	end
 
 	def check(arr)
-		#print self.coord
-		#puts arr
-		self.prev << self.coord
 		@@Q.delete(self)
 		@@V.delete(self)
 		arr.each {|x|
 			if x.dist > self.dist + 1
 				x.dist = self.dist + 1
-				x.prev = self.prev
+				x.prev = self
 				@@V << x
 			end
 		}
@@ -56,17 +62,13 @@ class Node
 		self.dist = 0
 		@@V[0] = self
 		while @@Q.include?(target)
-			#print @@V[0].coord
 			arr = @@V[0].find_neighbors
 			@@V[0].check(arr)
 		end
 	
 		puts "made it in #{target.dist} moves"
-		target.prev << target.coord
-		#target.prev.each {|x|
-			#print x 
-			#puts ""
-		#}
+		target.show_path
+		
 	end
 
 
@@ -91,6 +93,6 @@ end
 build_board
 q =  Node.queue
 s = Node.find([7,4])
-t = Node.find([6,6])
+t = Node.find([0,2])
 
 s.shortest_path(t)
